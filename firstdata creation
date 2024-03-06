@@ -88,3 +88,8 @@ def run_simulation():
 df = run_simulation()
 
 ``
+# find the location of file on my computer
+``
+import os
+print(os.getcwd())
+``
