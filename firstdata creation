@@ -112,4 +112,43 @@ pd.set_option('display.max_rows', None)
 # Display the entire DataFrame
 display(df)
 ``
+# plot the data with points and join with a line 
+``
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Assuming df is your DataFrame loaded previously
+
+# Create a new figure for plotting
+fig = plt.figure(figsize=(10, 8))
+ax = fig.add_subplot(111, projection='3d')
+
+# Collect all sx, sy, sz points for plotting
+sx_points = []
+sy_points = []
+sz_points = []
+
+# Loop through the DataFrame rows and collect each point
+for T_index in range(len(df)):
+    sx_points.append(df.iloc[T_index, df.columns.get_loc("sx_1")])
+    sy_points.append(df.iloc[T_index, df.columns.get_loc("sy_1")])
+    sz_points.append(df.iloc[T_index, df.columns.get_loc("sz_1")])
+
+# Plot the line by connecting the points
+ax.plot(sx_points, sy_points, sz_points, label='Episode 1 Trajectory')
+
+# Set the labels for each axis
+ax.set_xlabel('Displacement in X (m)')
+ax.set_ylabel('Displacement in Y (m)')
+ax.set_zlabel('Displacement in Z (m)')
+
+# Set the title of the plot
+ax.set_title('3D Line Trajectory for Episode 1')
+
+# Add a legend
+ax.legend()
+
+# Show the plot
+plt.show()
+``
 
