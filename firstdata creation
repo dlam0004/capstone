@@ -93,3 +93,15 @@ df = run_simulation()
 import os
 print(os.getcwd())
 ``
+# now read a csv file
+``
+import pandas as pd
+
+# Replace 'your_file.csv' with the path to your CSV file
+file_path = 'soccer_kick_simulation.csv'
+df = pd.read_csv(file_path)
+
+# Display the first few rows of the DataFrame
+print(df.head())
+``
+
