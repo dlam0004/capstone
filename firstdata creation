@@ -1,0 +1,90 @@
+``
+#from google.colab import drive
+#drive.mount('/content/drive')
+
+import numpy as np
+import pandas as pd
+
+
+# important variables
+g = -9.81  # Acceleration due to gravity (m/s^2)
+e = 0.7  # Coefficient of restitution
+M_leg = 7.5  # Mass of the leg (kg), estimate from 10kg (female), 12 kg (male)
+M_ball = 0.43  # Mass of a soccer ball (kg)
+time_step = 1  # Time step to map displacement (seconds)
+total_time = 5  # Total time to map the displacement (seconds)
+t_contact = 0.01  # Contact time with the ball (seconds)
+episodes = 10 # number of kicks made on this dataset
+
+# generate random 3D acceleration for x,y,z
+def generate_random_acceleration():
+   
+    acceleration = np.random.uniform(-15,15)
+    # for now I am assumoing only positive accelerations
+    ax = np.random.uniform(0, 4800)  # Example range in m/s^2
+    ay = np.random.uniform(0, 4800)
+    az = np.random.uniform(0, 2300)
+    return ax, ay, az
+# calculate the initial velocity of the leg for each dimension
+def calculate_initial_velocity(ax, ay, az):
+    
+   
+    V_leg_x = ax * t_contact
+    V_leg_y = ay * t_contact
+    V_leg_z = az * t_contact
+    
+    # use the calculated velocity of the leg to find the velocity of the ball during collision
+    # this is not a perfectly elastic collison
+    vx = V_leg_x * (M_leg / (M_leg + M_ball)) * (1 + e)
+    vy = V_leg_y * (M_leg / (M_leg + M_ball)) * (1 + e)
+    vz = V_leg_z * (M_leg / (M_leg + M_ball)) * (1 + e)
+    
+    return vx, vy, vz
+
+# find the position of the ball very 15 milliseconds
+def calculate_trajectory(vx, vy, vz):
+    
+    time_steps = np.arange(0, total_time + time_step, time_step)
+    trajectory = []
+    for t in time_steps:
+        sx = vx * t # x- displacement
+        sy = vy * t # y - displacement
+        sz = vz * t - 0.5 * g * t**2  # z-displacement includes gravity
+        trajectory.append((sx, sy, sz))
+    return trajectory
+
+
+# run a number of episodes and store data in a file
+def run_simulation():
+   
+    time_intervals = np.arange(0, total_time + time_step, time_step)
+    columns = (
+        ['episode', 'ax', 'ay', 'az', 'vx', 'vy', 'vz'] +
+        [f'sx_{t:.2f}s' for t in time_intervals] +
+        [f'sy_{t:.2f}s' for t in time_intervals] +
+        [f'sz_{t:.2f}s' for t in time_intervals]
+    )
+    data = []
+
+    for episode in range(1, episodes + 1):
+        ax, ay, az = generate_random_acceleration()
+        vx, vy, vz = calculate_initial_velocity(ax, ay, az)
+        trajectory = calculate_trajectory(vx, vy, vz)
+        trajectory_data = [coord for position in trajectory for coord in position]
+        data.append([episode, ax, ay, az, vx, vy, vz] + trajectory_data)
+
+    # Create DataFrame
+    df = pd.DataFrame(data, columns=columns)
+
+    # Save the DataFrame to a CSV file in the current working directory
+    file_path = 'soccer_kick_simulation.csv'
+    df.to_csv(file_path, index=False)
+
+    print(f"File saved to {file_path}")
+
+    return df  # Return the DataFrame for verification if needed
+
+# Run the simulation
+df = run_simulation()
+
+``
