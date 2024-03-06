@@ -104,4 +104,12 @@ df = pd.read_csv(file_path)
 # Display the first few rows of the DataFrame
 print(df.head())
 ``
+# displaying as many rows as possible
+``
+# Set the pandas option to display all rows
+pd.set_option('display.max_rows', None)
+
+# Display the entire DataFrame
+display(df)
+``
 
