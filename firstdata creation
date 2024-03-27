@@ -151,4 +151,43 @@ ax.legend()
 # Show the plot
 plt.show()
 ``
+\\ map out an entire episode
+import pandas as pd
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
+# Assuming the CSV file is in the same directory as your script
+csv_file_path = 'kick0.csv'
+episode_number = 1000  # Specify the episode number you want to analyze
+
+# Read the CSV file into a pandas DataFrame
+df = pd.read_csv(csv_file_path)
+
+# Filter the DataFrame for the specific episode
+episode_data = df[df['Episode'] == episode_number]
+
+# Display the DataFrame for the episode
+print(episode_data)
+
+# Plotting the 3D trajectory for the episode
+fig = plt.figure(figsize=(10, 7))
+ax = fig.add_subplot(111, projection='3d')
+
+# Extracting the x, y, and z coordinates
+x = episode_data['sx']
+y = episode_data['sy']
+z = episode_data['sz']
+
+# Create the 3D plot
+ax.plot(x, y, z, label=f'Episode {episode_number} Trajectory')
+
+# Set labels and title
+ax.set_xlabel('X Displacement (m)')
+ax.set_ylabel('Y Displacement (m)')
+ax.set_zlabel('Z Displacement (m)')
+ax.set_title('3D Trajectory of the Ball')
+
+# Show the plot with a legend
+ax.legend()
+plt.show()
+\\\
